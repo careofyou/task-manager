@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>ЗАДАЧИ</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar-left">
+            <h2>эбаут</h2>
+            <p>рул зе таск виа дедлайнс энд нотификэйшонс</p>
+        </aside>
+
+        <main class="content">
+            <div class="main-content" data-aos="fade-up">
+                <h1>ЗАДАЧИ</h1>
+
+                <form action="/add" method="POST" class="task-form" data-aos="fade-up"></form>
+                    <input type="text" name="content" placeholder="Добавить новую задачу" required>
+                    <input type="text" name="date" placeholder="Дата дедлайна (дд.мм.гггг)" pattern="\d{2}\.\d{2}\.\d{4}">
+                    <input type="text" name="time" placeholder="Время дедлайна (чч:мм)" pattern="\d{2}:\d{2}">
+                    <button type="submit" class="add-btn">Добавить задачу</button>
+                </form>
+                <div class="filters" data-aos="fade-up">
+                    <a href="{{ url_for('index', filter='all') }}">Все</a>
+                    <a href="{{ url_for('index', filter='completed') }}">Выполненные</a>
+                    <a href="{{ url_for('index', filter='pending') }}">Невыполненные</a>
+                </div>
+                <ul class="task-list">
+                    {% for task in tasks %}
+                    <li class="{% if task.completed %}completed{% endif %}" data-aos="fade-up">
+                        {% if task.completed %}
+                        <span class="checkmark">&#10003;</span>
+                        {% endif %}
+                        <span class="task-content">{{ task.content }}</span>
+                        {% if task.deadline and not task.completed %}
+                        <span class="deadline">
+                            Дедлайн: {{ task.deadline.strftime('%d.%m.%Y %H:%M') }}
+                            <span class="timer" data-deadline="{{ task.deadline.isoformat() }}"></span>
+                        </span>
+                        {% endif %}
+                        <div class="actions">
+                            <a href="/complete/{{ task.id }}">{{ "Отменить" if task.completed else "Выполнить" }}</a>
+                            <a href="/update/{{ task.id }}">Редактировать</a>
+                            <a href="/delete/{{ task.id }}">Удалить</a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </main>
+
+        <aside class="sidebar-right">
+            <h2>ссылки</h2>
+            <ul>
+                <li><a href="#">сеттингс</a></li>
+                <li><a href="#">хелп</a></li>
+                <li><a href="#">контактс</a></li>
+            </ul>
+        </aside>
+    </div>
+    <!-- scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mo-js/0.288.0/mo.min.js"></script>
+    <script src="{{ url_for('static', filename='timer.js') }}"></script>
+    <!-- AOS -->
+    <script>
+        AOS.init({
+            duration: 1000,
+        });
+    </script>
+</body>
+</html>
