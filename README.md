@@ -1,4 +1,5 @@
 # task-manager
+# python, flask, html, js, css
 simple task manager using flask 
 tested via Postamn.
 для создания новой задачи используется метод POST с раутером add:
